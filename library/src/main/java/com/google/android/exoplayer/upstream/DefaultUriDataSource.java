@@ -38,8 +38,13 @@ public final class DefaultUriDataSource implements UriDataSource {
 
   private static final String SCHEME_ASSET = "asset";
   private static final String SCHEME_CONTENT = "content";
-
+  private static final String SCHEME_HTTP = "http";
+  private static final String SCHEME_FTP = "ftp";
+  private static final String SCHEME_UDP = "udp";
+  
   private final UriDataSource httpDataSource;
+  private final UriDataSource ftpDataSource;
+//  private final UriDataSource udpDataSource;
   private final UriDataSource fileDataSource;
   private final UriDataSource assetDataSource;
   private final UriDataSource contentDataSource;
@@ -49,6 +54,7 @@ public final class DefaultUriDataSource implements UriDataSource {
    * data source is a file, or {@link #httpDataSource} otherwise.
    */
   private UriDataSource dataSource;
+  private TransferListener listener;
 
   /**
    * Constructs a new instance.
@@ -107,7 +113,9 @@ public final class DefaultUriDataSource implements UriDataSource {
    */
   public DefaultUriDataSource(Context context, TransferListener listener,
       UriDataSource httpDataSource) {
+	this.listener = listener;
     this.httpDataSource = Assertions.checkNotNull(httpDataSource);
+    this.ftpDataSource = new FtpDataSource(listener);
     this.fileDataSource = new FileDataSource(listener);
     this.assetDataSource = new AssetDataSource(context, listener);
     this.contentDataSource = new ContentDataSource(context, listener);
@@ -128,8 +136,12 @@ public final class DefaultUriDataSource implements UriDataSource {
       dataSource = assetDataSource;
     } else if (SCHEME_CONTENT.equals(scheme)) {
       dataSource = contentDataSource;
-    } else {
+    } else if(SCHEME_HTTP.equals(scheme)){
       dataSource = httpDataSource;
+    } else if(SCHEME_FTP.equals(scheme)){
+      dataSource = ftpDataSource;
+    }else if(SCHEME_UDP.equals(scheme)){
+    	dataSource = UdpDataSource.createInstance(dataSpec.uri.toString(), listener);
     }
     // Open the source and return.
     return dataSource.open(dataSpec);

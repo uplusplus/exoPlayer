@@ -35,6 +35,7 @@ import com.google.android.exoplayer.util.Util;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.SparseArray;
 
 import java.io.EOFException;
@@ -163,6 +164,13 @@ public final class ExtractorSampleSource implements SampleSource, SampleSourceRe
     } catch (ClassNotFoundException e) {
       // Extractor not found.
     }
+    try {
+        DEFAULT_EXTRACTOR_CLASSES.add(
+            Class.forName("com.google.android.exoplayer.extractor.ts.M2tsExtractor")
+                .asSubclass(Extractor.class));
+      } catch (ClassNotFoundException e) {
+        // Extractor not found.
+      }
     try {
       DEFAULT_EXTRACTOR_CLASSES.add(
           Class.forName("com.google.android.exoplayer.extractor.flv.FlvExtractor")
@@ -885,6 +893,7 @@ public final class ExtractorSampleSource implements SampleSource, SampleSourceRe
       }
       for (Extractor extractor : extractors) {
         try {
+          Log.d("selectExtractor", "test " + extractor.toString());
           if (extractor.sniff(input)) {
             this.extractor = extractor;
             break;
@@ -898,6 +907,7 @@ public final class ExtractorSampleSource implements SampleSource, SampleSourceRe
       if (extractor == null) {
         throw new UnrecognizedInputFormatException(extractors);
       }
+      Log.d("selectExtractor", "got " + extractor.toString());
       extractor.init(extractorOutput);
       return extractor;
     }

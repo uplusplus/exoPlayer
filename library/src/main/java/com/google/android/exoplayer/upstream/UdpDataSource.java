@@ -30,6 +30,13 @@ import java.net.SocketException;
  */
 public final class UdpDataSource implements UriDataSource {
 
+	public static UriDataSource createInstance(String url,TransferListener listener){
+		if(url.contains("@"))
+			return new MulticastDataSource(listener);
+		else
+			return new UdpDataSource(listener);
+	}
+	
   /**
    * Thrown when an error is encountered when trying to read from a {@link UdpDataSource}.
    */
