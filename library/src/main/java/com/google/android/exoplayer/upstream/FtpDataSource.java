@@ -80,7 +80,7 @@ public final class FtpDataSource implements UriDataSource {
 	  this.listener = listener;
 	  ftpClient = new FTPClient();
 	  ftpClient.setDataTimeout(timeout);
-	  ftpClient.setReceieveDataSocketBufferSize(bufferSize);	  	  
+//	  ftpClient.setReceieveDataSocketBufferSize(bufferSize);
 	  Log.i("ftp", "new FtpDataSource");
   }
 

@@ -165,7 +165,7 @@ public final class M2tsExtractor implements Extractor {
       tsPacketBuffer.skipBytes(adaptationFieldLength);
     }
 
-//    Log.i(TAG, "read pid: 0x" + Integer.toHexString(pid));
+    Log.i(TAG, "read pid: 0x" + Integer.toHexString(pid));
     
     // Read the payload.
     if (payloadExists) {
